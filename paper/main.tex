@@ -7,6 +7,8 @@
 \usepackage{xcolor}
 \usepackage{graphicx}
 \usepackage{geometry}
+\usepackage{float}
+
 \geometry{
     a4paper,
     total={170mm,257mm},
@@ -49,7 +51,7 @@ It has been widely observed that usage of larger learning
 rate in stochastic gradient descent often results into better models.
 However theoretical reasons for this phenomena are not well understood yet.
 Previous studies linked it to stochastic noise in SGD. 
-The work focuses on theoretical proof of escaping local minima 
+The work focuses on theoretical proof of escaping sharp minima 
 for some special class of functions. 
 Also it is shown that for certain starting points and loss functions
 GD with large learning rate has different trajectory 
@@ -64,14 +66,13 @@ which is likely to be more robust.
 Usage of large learning rate is often explained by intuition of 
 escaping local minima. 
 In this work a class $C_l$ of functions is constructed 
-which have at least two minima ($x^\dagger$ and $x_\ast$) and 
-with a large learning rate GD with random initialization converges 
+which have at least two minima ($x^\dagger$ and $x_\ast$). 
+Randomly initialized GD with large learning rate converges 
 to $x_\ast$ almost surely, but with smaller learning rate 
 there is strictly positive probability of converging to $x^\dagger$.
 
 \section{Theoretical Analysis}
-For analysis optimization problem using full-batch
-gradient descent with random initialization was taken:
+For analysis full-batch gradient descent with random initialization was taken:
 $$ f_* := \min_{x \in \mathbb{R}^d} f(x).$$
 $f$ is supposed to be $L$-smooth over regions of the landscape 
 so that the gradient does not change too sharply. 
@@ -108,18 +109,21 @@ $\mu$-one-point-strongly-convexity (OPSC) with respect to $x_\ast$ over $M$.
         $r_P$ depends on $r, \gamma, L_{\mathrm{global}}$.
 
         \item $\| x_\ast - x^\dagger \| > \tau$, where $\tau$ depends on $\mu_\ast, r, \gamma$. 
+    \end{itemize}
 
         Then using learning rate $\frac{2}{\mu^\dagger} < \gamma < \frac{\mu_\ast}{L^2}$
         GD escape $M$ and reach a point closer to $x_\ast$ than 
         $\| x^\dagger - x_\ast\| - r$ almost surely. 
 
-    \end{itemize}
 \end{lemma}
 \begin{proof}
-    
+    Proof is presented in \cite{mohtashami2023special} in appendix D.
 \end{proof}
 
-\begin{figure}[h]
+
+Figure \cref{fig:func} illustrates regions and points defined in \cref{lma1} for a simple function.
+
+\begin{figure}[H]
     \caption{Illustation of regions from \cref{lma1}}
     \label{fig:func}
     \centering
@@ -127,7 +131,7 @@ $\mu$-one-point-strongly-convexity (OPSC) with respect to $x_\ast$ over $M$.
 \end{figure}
 
 \begin{theorem}\label{thm1}
-    Let $C_l$ be the set of functions sudh as $f$ is 
+    Let $C_l$ be the set of functions such as $f$ is 
     $L$-smooth and $\mu_\ast$-OPSC with respect to the 
     global minima $x_\ast$ except n a region $M$ that 
     contains local minima $x^\dagger$ and satisfies \cref{lma1}.
@@ -138,27 +142,27 @@ $\mu$-one-point-strongly-convexity (OPSC) with respect to $x_\ast$ over $M$.
         
         \item Gradient descent initialized randomly in 
         arbitrary set $W: \mathcal{L}(W) > 0$ 
-        with learning rate $\frac{2}{\mu^\dagger} < gamma \leq \frac{\mu_\ast}{L^2}$
+        with learning rate $\frac{2}{\mu^\dagger} < \gamma \leq \frac{\mu_\ast}{L^2}$
         converges to $x_\ast$ almost surely.
 
     \end{itemize} 
 
 \end{theorem}
 \begin{proof}
-    
+    Proof is presented in \cite{mohtashami2023special} in appendix E.
 \end{proof}
 
 \begin{lemma}\label{lma2}
-    Take gradient descent initialized randomly in set $W$ 
+    Consider gradient descent initialized randomly in set $W$ 
     with learning rate $\gamma \leq \frac{1}{2L}$.
     Let $X \subset \mathbb{R}^d$ arbitrary set of points in 
     the landscape, $f$ is $L$-smooth over 
-    $\mathbb{R}^d \setminus X$. Probabilty of encountering 
+    $\mathbb{R}^d \setminus X$. Probability of encountering 
     any point of $X$ in first $T$ steps of gradient descent is 
     at most $2 ^ {(T + 1)d} \frac{\mathcal{L}(X)}{\mathcal{L}(W)}$.
 \end{lemma}
 \begin{proof}
-    
+    Proof is presented in \cite{mohtashami2023special} in appendix B.
 \end{proof}
 
 \begin{theorem}\label{thm2}
@@ -167,39 +171,39 @@ $\mu$-one-point-strongly-convexity (OPSC) with respect to $x_\ast$ over $M$.
     $x_\ast \notin X$ over $\mathbb{R}^d \setminus X$.
     Let $c_X := \inf \left\{ \| x - x_\ast \| \:|\: x \in X  \right\}$
     and $r_W := \sup \left\{ \| x - x_\ast \| \:|\: x \in W \right\}$.
-    The probability of not encountering ant points of $X$ during 
+    The probability of not encountering any point of $X$ during 
     gradient descent with learning rate $\gamma \leq \frac{\mu_\ast}{L^2}$
     is at least $1 - \frac{r_W}{c_X}^{\frac{-d}{\log_2(1 - \gamma \mu_\ast)}} \frac{\mathcal{L}(X)}{\mathcal{L}(W)} 2^d$
     if $c_X \leq r_W$ and $1$ otherwise.
 \end{theorem}
 
 \begin{proof}
-    
+    Proof is presented in \cite{mohtashami2023special} in appendix C.
 \end{proof}
 
-\section*{Proposition}
-Take the case of SGD 
-$$ 
-x_{t + 1} := x_t - \gamma \left( 
-    \nabla f(x_t) + \xi_t
-\right),
-$$
-where $\xi_t$ considered to be $\mathrm{Uniform}(-\sigma, \sigma)$.
+% Take the case of SGD 
+% $$ 
+% x_{t + 1} := x_t - \gamma \left( 
+%     \nabla f(x_t) + \xi_t
+% \right),
+% $$
+% where $\xi_t$ independent and identically distributed
+% from $\mathrm{Uniform}(-\sigma, \sigma)$. 
 
-\begin{proposition}
-    Consider SGD on the function from figure \ref{fig:func}, 
-    starting close to $x^\dagger$.
-    If the learning rate is sufficiently small the iterations
-    will never converge to $x_\ast$ nor to a small region around it, 
-    regardless of the magnitude of the noise. 
-    If the learning rate is large enough and stochastic noise
-    satisfies certain bounds, SGD will converge to $x_\ast$ 
-    from any starting point.
-\end{proposition}
+% \begin{proposition}
+%     Consider SGD on the function from figure \ref{fig:func}, 
+%     starting close to $x^\dagger$.
+%     If the learning rate is sufficiently small the iterations
+%     will never converge to $x_\ast$ nor to a small region around it, 
+%     regardless of the magnitude of the noise. 
+%     If the learning rate is large enough and stochastic noise
+%     satisfies certain bounds, SGD will converge to $x_\ast$ 
+%     from any starting point.
+% \end{proposition}
 
-\begin{proof}
+% \begin{proof}
     
-\end{proof}
+% \end{proof}
 
 \clearpage 
 
@@ -220,28 +224,31 @@ $$
 \begin{figure}[!htb]
     \caption{Visual comparison of GD with different learning rates.}
     \minipage{0.33\textwidth}
-      \includegraphics[width=\linewidth]{1d_example_min_near_start.png}
-      \caption{GD converged to local minima close to start.}
+      \includegraphics[width=\linewidth]{converge_to_sharp.png}
+      \caption{GD converged to the sharpest minima.}
     \endminipage\hfill
     \minipage{0.32\textwidth}
-      \includegraphics[width=\linewidth]{1d_example_local_min.png}
-      \caption{GD converged to local minima.}
+      \includegraphics[width=\linewidth]{converge_to_half_sharp.png}
+      \caption{GD converged to the sharp minima.}
     \endminipage\hfill
     \minipage{0.32\textwidth}%
-      \includegraphics[width=\linewidth]{1d_example_global_min.png}
-      \caption{GD converged to global minima.}
+      \includegraphics[width=\linewidth]{converge_to_flat.png}
+      \caption{GD converged to the flat minima.}
     \endminipage
 \end{figure}
 
 \begin{figure}[!htb]
     \begin{center}
-        \caption{Types of convegence of GD depending on startpoint and learning rate.}
-        \includegraphics[scale=0.7]{1d_learning_rate_stats.png}        
+        \caption{
+            Types of convegence of GD depending on startpoint and learning rate. \\
+            Empty spaces represent no convergence in 1000 iterations.
+        }
+        \includegraphics[scale=0.7]{1d_GD_results.png}        
     \end{center}
 \end{figure}
 
 From the experiments we can see that usage of larger learning rates
-helps to escape local minima and converge to a flatter one.
+helps to escape sharp minima and converge to a flatter one.
 
 \clearpage
 
@@ -266,30 +273,74 @@ $$
     \endminipage
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \begin{center}
         \caption{Share of GDs that obtained flat minima if starting point is random $3 \leq x, y \leq 4$.}
-        \includegraphics[scale=0.7]{2d_example_lr_vs_minima.png}        
+        \includegraphics[scale=0.3]{2d_example_lr_vs_minima.png}        
     \end{center}
 \end{figure}
 
+From these toy examples we can see that GD with larger learning rate 
+indeed converge to flatter minima. 
+
 \subsection{MNIST example}
-Not yet finished experiments
-\begin{itemize}
-    \item Warm up NN using small learning rate.
-    Use large and small learning rate,
-    according to figure 7 from \cite{mohtashami2023special} 
-    they might have different trajectories and converge to 
-    different minima. 
+For the experiment with neural networks MNIST dataset was taken. 
+The architecture of the NN consisted of 3 linear layers with $\mathrm{ReLU}$ 
+activation layers each and cross entropy loss function.
+During the experiment 3 random initial points were chosen and from each starting point 
+3 GDs with different learning rates were performed. 
+Weights of the first layer were saved during training and 
+then were reduced to 2 dimensional space using PCA. 
+PCA was performed in 2 ways.
+The first way is all starting points together, 
+the second one is each starting point separately from the others. 
 
-    \item Test hypothesis that minima obtained using larger 
-    learning rate is more robust. 
-    Train NN using large and small learning rate.
-    Then change the training dataset and continue to train.
-    Compare distance between minima of different datasets 
-    obtained small and large learning rate.  
+\begin{figure}[H]
+    \begin{center}
+        \caption{Trajectories of all starting points}
+        \includegraphics[scale=0.3]{pca_all_strategies.png}        
+    \end{center}
+\end{figure}
 
-\end{itemize}
+From this picture it seems like the trajectory does not depend much 
+on a learning rate and GDs from same point follow similar path. 
+But if we look at trajectories when PCA performed for each starting point independently 
+we can see that the paths are different. 
+Also some symmetry across different starting points can be noted. 
+
+\begin{figure}[!htb]
+    \caption{Trajectories of each starting point.}
+    \minipage{0.33\textwidth}
+      \includegraphics[width=\linewidth]{trajectory_a.png}
+      \caption{GD for starting point A.}
+    \endminipage\hfill
+    \minipage{0.33\textwidth}
+      \includegraphics[width=\linewidth]{trajectory_b.png}
+      \caption{GD for starting point B.}
+    \endminipage\hfill
+    \minipage{0.33\textwidth}
+      \includegraphics[width=\linewidth]{trajectory_c.png}
+      \caption{GD for starting point C.}
+    \endminipage
+\end{figure}
+
+All the obtained minimas showed similar performance on train and test validation.
+
+\section{Conclusion}
+It was shown that for certain class of functions and with weak assumptions on 
+starting point GD with small learning rate almost surely converges to sharp minima, 
+while GS with larger learning rate almost surely converges to flat minima. 
+This behaviour was shown on one and two dimensional cases. 
+Similar behaviour was shown for neural networks. 
+For different starting points GDs with different learning rate converged to different minimas. 
+
+\section{Future work}
+For more illustrative experiments a pretrained and more complex neural network might be taken. 
+It is initially near some minima, and different learning rate can lead to converging to it, 
+or escaping from it and search for a flatter minima. 
+In this case obtained trajectories might have more notable difference. 
+Also for more complex architectures flatter minima might be more robust 
+and performe better on testing set. 
 
 \bibliographystyle{alpha}
 \bibliography{sample}
