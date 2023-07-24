@@ -1,0 +1,249 @@
+\documentclass{beamer}
+\usepackage{bbm}
+
+%Information to be included in the title page:
+\title{Optimization with large learning rate}
+% \author{Denis Grachev} 
+
+\author[author1]{Denis Grachev\\[10mm]{\small supervisor: Yurii Malitsky}}
+
+
+\institute{University of Vienna}
+
+\date{\today}
+
+\begin{document}
+
+\frame{\titlepage}
+\graphicspath{{./images/}}
+
+\begin{frame}
+\frametitle{Defenitions}
+
+$$ f_* := \min_{x \in \mathbb{R}^d} f(x)$$
+$f$ is $L$-smooth and 
+$\mu$-one-point-strongly-convexity (OPSC) with respect to $x_\ast$ over $M \subset \mathbb{R}^d$.
+
+\begin{definition}[$f: \mathbb{R}^d \rightarrow \mathbb{R}$ is $L$-smoothness]
+	\begin{itemize}
+		\item $f$ is differentiable
+		\item $\exists L: \| \nabla f(x) - \nabla f(y)\| \leq L \| x - y \|$ 
+	\end{itemize}
+\end{definition}
+
+\begin{definition}[ $f: \mathbb{R}^d \rightarrow \mathbb{R}$ is $\mu$-one-point-strongly-convex (OPSC) with respect to $x_\ast$ over $M$]
+	\begin{itemize}
+		\item $f$ is differentiable
+		\item $\exists \mu > 0: \langle \nabla f(x), x - x_\ast \rangle \geq \mu \| x - x_\ast\|^2, \: \forall x \in M$
+	\end{itemize}
+  
+\end{definition}
+
+\end{frame}
+
+\begin{frame}{Motivation}
+	\begin{itemize}
+		\item Standart threshold for learning rate in Gradient Descent is $\gamma < \frac{2}{L}$.
+		\item 
+	\end{itemize}
+	%For minimazation convex functions standart
+	%threshold for learning rate is $\gamma < \frac{2}{L}$ .\\
+	%However it has been widely observed that 
+	%large step size often lead to better models when training 
+	%neural networks.\\
+	%The effect of large learning rate hasn't yet been fully understood. \\
+	%New theorems demonstrate that GD with large step size 
+	%on certain class of functions follows different %trajectory than with small step size.
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Lemma 1}
+Let $f$ be a function that is 
+$L_{\mathrm{global}}$ -smooth with a global minimum $x_\ast$. 
+Assume there exists a local minimum $x^\dagger$ around which
+\begin{itemize}
+\item $f$ is $\mu^\dagger$-OPSC with respect to 
+$x^\dagger$ over a set $M$ that contains $x^\dagger$ with diameter $r$.
+
+\item Let $P(M)$ be a ball around $x^\dagger$ with radius 
+$r_P$ excluding points M. $f$ is 
+$L < L_{\mathrm{global}}$ -smooth in $P(M)$ and 
+$\mu_\ast$-OPSC with respect to $x_\ast$, 
+such as $\mu^\dagger > \frac{2L^2}{\mu_\ast}$. 
+$r_P$ depends on $r, \gamma, L_{\mathrm{global}}$.
+
+\item $\| x_\ast - x^\dagger \| > \tau$, where $\tau$ depends on $\mu_\ast, r, \gamma$. 
+\end{itemize}
+
+Then using learning rate $\frac{2}{\mu^\dagger} < \gamma < \frac{\mu_\ast}{L^2}$
+GD escape $M$ and reach a point closer to $x_\ast$ than 
+$\| x^\dagger - x_\ast\| - r$ almost surely. 
+
+\end{frame}
+
+% \begin{frame}
+% \frametitle{Lemma 1}
+% \begin{figure}[h]
+%     \includegraphics[scale=0.2]{lemma1}
+% \end{figure}
+% \end{frame}
+
+\begin{frame}
+\frametitle{Theorem 1}
+Let $C_l$ be the set of functions sudh as $f$ is 
+$L$-smooth and $\mu_\ast$-OPSC with respect to the 
+global minima $x_\ast$ except n a region $M$ that 
+contains local minima $x^\dagger$ and satisfies.
+\begin{itemize}
+    \item Gradient descent initialized randomly inside $M$ 
+    with learning rate $\gamma < \frac{\mu^\dagger}{L^2_{\mathrm{global}}}$
+    converges to $x^\dagger$ almost surely.
+    
+    \item Gradient descent initialized randomly in 
+    arbitrary set $W: \mathcal{L}(W) > 0$ 
+    with learning rate $\frac{2}{\mu^\dagger} < gamma \leq \frac{\mu_\ast}{L^2}$
+    converges to $x_\ast$ almost surely.
+\end{itemize} 
+\end{frame}
+
+\begin{frame}
+\frametitle{Lemma 2}
+Take gradient descent initialized randomly in set $W$ 
+with learning rate $\gamma \leq \frac{1}{2L}$. \\
+Let $X \subset \mathbb{R}^d$ arbitrary set of points in 
+the landscape, $f$ is $L$-smooth over 
+$\mathbb{R}^d \setminus X$. \\
+Probabilty of encountering 
+any point of $X$ in first $T$ steps of gradient descent is 
+at most $2 ^ {(T + 1)d} \frac{\mathcal{L}(X)}{\mathcal{L}(W)}$.
+\end{frame}
+
+\begin{frame}
+\frametitle{Theorem 2}
+Let $X$ be an arbitrary set of points, 
+$f$ is $\mu_\ast$-OPSC with respect to a minima 
+$x_\ast \notin X$ over $\mathbb{R}^d \setminus X$. \\
+Let $c_X := \inf \left\{ \| x - x_\ast \| \:|\: x \in X  \right\}$
+and $r_W := \sup \left\{ \| x - x_\ast \| \:|\: x \in W \right\}$.\\
+The probability of not encountering any points of $X$ during 
+gradient descent with learning rate $\gamma \leq \frac{\mu_\ast}{L^2}$
+is at least $1 - \frac{r_W}{c_X}^{\frac{-d}{\log_2(1 - \gamma \mu_\ast)}} \frac{\mathcal{L}(X)}{\mathcal{L}(W)} 2^d$
+if $c_X \leq r_W$ and $1$ otherwise.
+\end{frame}
+
+
+
+\begin{frame}{Example 1D}
+    $$
+    f(x):= \begin{cases}        
+        % \left(
+            -1600(x-2.5)^5-2000(x-2.5)^4 + \\
+            \quad +800(x-2.5)^3+1020(x-2.5)^2
+        % \right) 
+        & 2 \leq x \leq 3 \\ 
+        1411.2 \times\left(1-10^4(x-8.4)\right) & 8.4 \leq x \leq 8.40001 \\ 
+        0 & 8.40001 \leq x \leq 8.59999 \\ 
+        1479.2 \times\left(10^4(x-8.6)+1\right) & 8.59999 \leq x \leq 8.6 \\ 
+        20 x^2 & \textit{ otherwise }
+    \end{cases}
+    $$
+    
+    GD with different starting points and different learning rate was performed. \\
+    The results can be studied in the demo.
+\end{frame}
+
+\begin{frame}{Example 2D}
+	\begin{align*}
+		f(x, y) := 
+			&x^2 + y^2 - \\
+			&200 \mathrm{ReLU}(|x|-1) \mathrm{ReLU}(|y|-1) \\
+			&\mathrm{ReLU}(2-|x|) \mathrm{ReLU}(2-|y|)
+	\end{align*}
+	
+	GD randomly initialized in the region $\left[3, 4\right] \times \left[3, 4\right]$ 
+	with different learning rates was performed.
+	For each learning rate fraction of each minima is calculated. \\
+	Results in the demo.
+	
+\end{frame}
+    
+\begin{frame}{Brief introduction to ML}
+    $D - \{(x_1, y_1), (x_2, y_2) \ldots (x_n, y_n) \:\|\: x_i \in \mathbb{R}^k, y_i \in C \}$ - dataset. \\
+    $f: \mathbb{R}^k \times \mathbb{R}^p \rightarrow \mathbb{R}^t$ - NN with $p$ parameters. \\
+    $l: \mathbb{R}^t \times C \rightarrow \mathbb{R}$ - loss function. \\
+    $L(D, \theta) = \sum_{i=1}^{n} l(f(x_i, \theta), y_i)$ - total loss.\\
+    Training $\min_{\theta \in \mathbb{R}^p} L(D, \theta)$. \\
+    \vspace{5mm}
+    Two datasets are taken, training and validation to test overfitting.
+    \begin{figure}[h]
+        \includegraphics[scale=0.15]{polynomial}
+    \end{figure}
+
+\end{frame}
+
+\begin{frame}{Dataset}
+For test dataset MNIST dataset was taken. \\
+It consists of pictures $28 \times 28$ pixels of numbers. \\
+It has 60000 training and 10000 validation pictures. \\
+$C = \{0, 1, 2, \ldots, 9 \}$ \\
+$t = 10$ \\
+
+\begin{figure}[h]
+    \includegraphics[scale=0.3]{mnist}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Loss function}
+	Cross entropy loss was used.
+    
+    $l: \mathbb{R}^t \times C \rightarrow \mathbb{R}$ \\
+    $l(\hat{y}, y) := -\sum_{i=1}^c \mathbbm{1}_{i == y} \log\left(\frac{\exp{y_i}}{\sum_{j=1}^c \exp{y_j}}\right) = -\log(p_{\text{true}})$ \\
+    
+    \begin{figure}[h]
+    	\includegraphics[scale=0.5]{binary-cross-entropy-loss}
+    \end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Structure of NN}
+    A common structure of NN is 
+    $$f = f_k \circ \mathrm{Linear}_k \circ \ldots \circ f_1 \circ \mathrm{Linear}_1$$
+    where $\mathrm{Linear}_i$ is some linear function and $f_i$ is a non linear elementwise function.
+
+    \vspace{5mm}
+
+    A popular choice of $f_i$ is $\mathrm{ReLU}$
+    $$ 
+    \mathrm{ReLU}(x) := \begin{cases}
+    x & x > 0 \\
+    0 & x <= 0
+    \end{cases} 
+    $$
+    
+    For test was taken
+    $$ f = \mathrm{ReLU} \circ \mathrm{Linear}(16, 10) \circ \mathrm{ReLU} \circ \mathrm{Linear}(32, 16) \circ \mathrm{ReLU} \circ \mathrm{Linear}(784, 32)$$
+
+\end{frame}
+
+\begin{frame}{Analyzis of NN}
+	GD from 3 initial position each with 3 different learning rates were performed. \\
+	GD with smaller learning rates have proportionaly more steps for training.
+	
+	Parameters of the first layer were saved during GD. \\
+	PCA was performed and first 2 components were plotted. \\
+	
+	Also PCA for GD for each individual initial position were performed and plotted. \\
+	
+	Results in the demo.
+	
+\end{frame}
+
+\begin{frame}{end}
+	  \centering \Large
+	  \emph{Thank you for attention!}
+\end{frame}
+
+\end{document}
